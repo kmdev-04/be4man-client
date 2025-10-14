@@ -247,7 +247,7 @@ export const ModeToggle = styled.button`
     isDark ? theme.colors.surface : theme.colors.textPrimary};
   transition: none;
   -webkit-tap-highlight-color: transparent;
-  pointer-events: none;
+  pointer-events: ${({ $displayOnly }) => ($displayOnly ? 'none' : 'auto')};
 
   &::after {
     content: '';
@@ -397,7 +397,6 @@ export const SheetClose = styled.button`
   cursor: pointer;
   text-size-adjust: 100%;
   display: inline-block;
-  -webkit-tap-highlight-color: transparent;
 
   &::before,
   &::after {
