@@ -397,6 +397,7 @@ export const SheetClose = styled.button`
   cursor: pointer;
   text-size-adjust: 100%;
   display: inline-block;
+  -webkit-tap-highlight-color: transparent;
 
   &::before,
   &::after {
