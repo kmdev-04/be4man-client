@@ -1,405 +1,188 @@
-// src/features/approval/mocks/templates.js
-export const DOC_TYPES = ['작업 계획서', '결과 보고서', '재배포', '복구'];
+import { LibraryBig } from 'lucide-react';
+import { useMemo, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 
-export const TEMPLATES = {
-  '작업 계획서': {
-    design: `
-          <h2>시스원 연혁 업데이트 배포 작업 계획서</h2>
-    
-          <h3>1. 개요</h3>
-          <p>
-            본 문서는 시스원 홈페이지 연혁(History) 영역의 연도별 이력 데이터를 최신 상태로 반영하기 위한
-            배포 작업 계획을 정리한 문서입니다.<br/>
-            본 배포는 기존 연혁 데이터의 정합성을 유지하면서 신규 연혁 데이터를 추가/수정하고,
-            서비스 중단 없이 안전하게 반영하는 것을 목표로 합니다.
-          </p>
-    
-          <h3>2. 목표</h3>
-          <ul>
-            <li>
-              핵심 목표 1: 시스원 연혁 페이지의 연도·이벤트 정보를 최신 상태로 100% 반영<br/>
-              / 측정 지표: 최신 연혁 리스트 기준 누락 항목 0건
-            </li>
-            <li>
-              핵심 목표 2: 배포 과정에서 사용자 체감 장애(5xx, 페이지 로딩 실패) 0건 유지<br/>
-              / 측정 지표: 배포 시간대 오류율 &lt; 1%, 가용성 99.9% 이상
-            </li>
-          </ul>
-    
-          <h3>3. 일정</h3>
-          <p>
-            계획 기간: 2025-12-02 20:00 ~ 2025-12-03 23:00<br/>
-            - 사전 점검: 2025-12-02 20:00 ~ 2025-12-02 22:00 (QA/검증 환경 기준)<br/>
-            - 운영 배포: 2025-12-03 22:00 ~ 2025-12-03 23:00 (무중단 또는 단기 점검 방식)
-          </p>
-    
-          <h3>4. 담당자</h3>
-          <p>
-            실행(콘텐츠/프론트): 디지털플랫폼개발팀 / 김민호 / 010-1234-5678<br/>
-            실행(인프라/배포): 인프라운영팀 / 이지훈 / 010-2345-6789<br/>
-            지원(보안/DB 등): 보안기획팀 / 박서연 / 010-3456-7890<br/>
-            승인: 개발1팀장 / 최현우
-          </p>
-    
-          <h3>5. 수행 내용</h3>
-          <ul>
-            <li>
-              사전 준비<br/>
-              - 최신 연혁 데이터 정리(연도, 주요 이벤트, 설명 문구 등)<br/>
-              - 스테이징/QA 환경에 연혁 데이터 반영 후 화면·링크·반응형 UI 검증<br/>
-              - 연혁 데이터 이전 버전 백업(파일/DB 기준) 및 롤백 스크립트 준비<br/>
-            </li>
-            <li>
-              적용/배포<br/>
-              - 연혁 데이터 소스(JSON/DB/Markdown 등) 신규 버전 반영<br/>
-              - 프론트엔드 빌드 &amp; 배포(캐시 무효화 전략 포함)<br/>
-              - Blue-Green 또는 무중단 방식으로 새 버전 트래픽 전환
-            </li>
-            <li>
-              검증<br/>
-              - 주요 연도별 연혁 노출 여부 및 정렬 순서 확인<br/>
-              - 다국어/모바일/데스크톱 뷰에서 레이아웃·가독성 확인<br/>
-              - 에러 로그·APM·헬스체크(HTTP 200/지연시간) 모니터링
-            </li>
-          </ul>
-    
-          <h3>6. 리스크</h3>
-          <ul>
-            <li>
-              리스크 1 – 연혁 데이터 누락/오타<br/>
-              - 영향: 특정 연도 이력 미표시, 대외 커뮤니케이션 신뢰도 저하<br/>
-              - 방안: 사전 더블 체크(작성자·검수자 이중 검토), QA 체크리스트 기반 검증
-            </li>
-            <li>
-              리스크 2 – 캐시로 인한 구/신 버전 혼재 노출<br/>
-              - 영향: 사용자별로 서로 다른 연혁 정보 노출<br/>
-              - 방안: 배포 시점에 CDN/브라우저 캐시 무효화 헤더 적용 및 캐시 키 버저닝
-            </li>
-            <li>
-              리스크 3 – 배포 스크립트 오류로 인한 롤백 지연<br/>
-              - 영향: 짧은 시간이나마 연혁 페이지 접속 장애 가능<br/>
-              - 방안: 배포 전 롤백 스크립트 사전 리허설, 운영 전 마지막으로 dry-run 수행
-            </li>
-          </ul>
-    
-          <h3>7. 백업</h3>
-          <ul>
-            <li>대상: 기존 연혁 데이터 소스(파일/DB 테이블), 관련 정적 리소스</li>
-            <li>방법: 
-              - 파일: 기존 버전 디렉터리 압축 후 백업 스토리지 업로드<br/>
-              - DB: 해당 테이블 Export 또는 스냅샷 생성
-            </li>
-            <li>
-              검증: 백업본을 별도 테스트 환경에 복원하여 정상 노출 여부 확인<br/>
-              (검증 일시: 2025-12-02 22:30, 담당자: 김민호)
-            </li>
-          </ul>
-    
-          <h3>8. 실패 시 복구 방안</h3>
-          <ul>
-            <li>
-              복구 기준<br/>
-              - 연혁 페이지 5xx 오류 발생, 또는 주요 연도 이력 누락/표시 오류가 다수 확인되는 경우<br/>
-              - 모니터링 지표 기준 에러율 임계치 초과 시 즉시 롤백
-            </li>
-            <li>
-              복구 절차(일시)<br/>
-              - 트래픽 완화(배포 대상 서버/라우팅 분리) → 이전 버전 아티팩트/데이터로 롤백(2025-12-03 22:30)<br/>
-              → 연혁 페이지 헬스체크 및 링크·내용 재확인 → 원인 분석 후 재배포 계획 수립
-            </li>
-            <li>
-              커뮤니케이션<br/>
-              - 장애 또는 롤백 발생 시, 즉시 내부 알림(Slack/메일 등) 및 운영팀 공유<br/>
-              - 필요 시 공지 게시(공지 일시: 2025-12-03 23:10), 사후 보고서 작성
-            </li>
-          </ul>
-        `,
-    html: `
-          <h3>1. 개요</h3>
-          <p>
-            본 문서는 시스원 홈페이지 연혁(History) 영역의 연도별 이력 데이터를 최신 상태로 반영하기 위한
-            배포 작업 계획을 정리한 문서입니다.<br/>
-            본 배포는 기존 연혁 데이터의 정합성을 유지하면서 신규 연혁 데이터를 추가/수정하고,
-            서비스 중단 없이 안전하게 반영하는 것을 목표로 합니다.
-          </p>
-    
-          <h3>2. 목표</h3>
-          <ul>
-            <li>
-              핵심 목표 1: 시스원 연혁 페이지의 연도·이벤트 정보를 최신 상태로 100% 반영<br/>
-              / 측정 지표: 최신 연혁 리스트 기준 누락 항목 0건
-            </li>
-            <li>
-              핵심 목표 2: 배포 과정에서 사용자 체감 장애(5xx, 페이지 로딩 실패) 0건 유지<br/>
-              / 측정 지표: 배포 시간대 오류율 &lt; 1%, 가용성 99.9% 이상
-            </li>
-          </ul>
-    
-          <h3>3. 일정</h3>
-          <p>
-            계획 기간: 2025-12-02 20:00 ~ 2025-12-03 23:00<br/>
-            - 사전 점검: 2025-12-02 20:00 ~ 2025-12-02 22:00 (QA/검증 환경 기준)<br/>
-            - 운영 배포: 2025-12-03 22:00 ~ 2025-12-03 23:00 (무중단 또는 단기 점검 방식)
-          </p>
-    
-          <h3>4. 담당자</h3>
-          <p>
-            실행(콘텐츠/프론트): 디지털플랫폼개발팀 / 김민호 / 010-1234-5678<br/>
-            실행(인프라/배포): 인프라운영팀 / 이지훈 / 010-2345-6789<br/>
-            지원(보안/DB 등): 보안기획팀 / 박서연 / 010-3456-7890<br/>
-            승인: 개발1팀장 / 최현우
-          </p>
-    
-          <h3>5. 수행 내용</h3>
-          <ul>
-            <li>
-              사전 준비<br/>
-              - 최신 연혁 데이터 정리(연도, 주요 이벤트, 설명 문구 등)<br/>
-              - 스테이징/QA 환경에 연혁 데이터 반영 후 화면·링크·반응형 UI 검증<br/>
-              - 연혁 데이터 이전 버전 백업(파일/DB 기준) 및 롤백 스크립트 준비<br/>
-            </li>
-            <li>
-              적용/배포<br/>
-              - 연혁 데이터 소스(JSON/DB/Markdown 등) 신규 버전 반영<br/>
-              - 프론트엔드 빌드 &amp; 배포(캐시 무효화 전략 포함)<br/>
-              - Blue-Green 또는 무중단 방식으로 새 버전 트래픽 전환
-            </li>
-            <li>
-              검증<br/>
-              - 주요 연도별 연혁 노출 여부 및 정렬 순서 확인<br/>
-              - 다국어/모바일/데스크톱 뷰에서 레이아웃·가독성 확인<br/>
-              - 에러 로그·APM·헬스체크(HTTP 200/지연시간) 모니터링
-            </li>
-          </ul>
-    
-          <h3>6. 리스크</h3>
-          <ul>
-            <li>
-              리스크 1 – 연혁 데이터 누락/오타<br/>
-              - 영향: 특정 연도 이력 미표시, 대외 커뮤니케이션 신뢰도 저하<br/>
-              - 방안: 사전 더블 체크(작성자·검수자 이중 검토), QA 체크리스트 기반 검증
-            </li>
-            <li>
-              리스크 2 – 캐시로 인한 구/신 버전 혼재 노출<br/>
-              - 영향: 사용자별로 서로 다른 연혁 정보 노출<br/>
-              - 방안: 배포 시점에 CDN/브라우저 캐시 무효화 헤더 적용 및 캐시 키 버저닝
-            </li>
-            <li>
-              리스크 3 – 배포 스크립트 오류로 인한 롤백 지연<br/>
-              - 영향: 짧은 시간이나마 연혁 페이지 접속 장애 가능<br/>
-              - 방안: 배포 전 롤백 스크립트 사전 리허설, 운영 전 마지막으로 dry-run 수행
-            </li>
-          </ul>
-    
-          <h3>7. 백업</h3>
-          <ul>
-            <li>대상: 기존 연혁 데이터 소스(파일/DB 테이블), 관련 정적 리소스</li>
-            <li>방법: 
-              - 파일: 기존 버전 디렉터리 압축 후 백업 스토리지 업로드<br/>
-              - DB: 해당 테이블 Export 또는 스냅샷 생성
-            </li>
-            <li>
-              검증: 백업본을 별도 테스트 환경에 복원하여 정상 노출 여부 확인<br/>
-              (검증 일시: 2025-12-02 22:30, 담당자: 김민호)
-            </li>
-          </ul>
-    
-          <h3>8. 실패 시 복구 방안</h3>
-          <ul>
-            <li>
-              복구 기준<br/>
-              - 연혁 페이지 5xx 오류 발생, 또는 주요 연도 이력 누락/표시 오류가 다수 확인되는 경우<br/>
-              - 모니터링 지표 기준 에러율 임계치 초과 시 즉시 롤백
-            </li>
-            <li>
-              복구 절차(일시)<br/>
-              - 트래픽 완화(배포 대상 서버/라우팅 분리) → 이전 버전 아티팩트/데이터로 롤백(2025-12-03 22:30)<br/>
-              → 연혁 페이지 헬스체크 및 링크·내용 재확인 → 원인 분석 후 재배포 계획 수립
-            </li>
-            <li>
-              커뮤니케이션<br/>
-              - 장애 또는 롤백 발생 시, 즉시 내부 알림(Slack/메일 등) 및 운영팀 공유<br/>
-              - 필요 시 공지 게시(공지 일시: 2025-12-03 23:10), 사후 보고서 작성
-            </li>
-          </ul>
-        `,
-  },
+import { PATHS } from '@/app/routes/paths';
+import { useAuth } from '@/hooks/useAuth';
+import { useUIStore } from '@/stores/uiStore';
 
-  재배포: {
-    design: `
-      <h2>재배포 계획서</h2>
+import HomeDayIcon from '/icons/home-day.svg';
+import HomeNightIcon from '/icons/home-night.svg';
+import HomeActiveIcon from '/icons/home-active.svg';
 
-      <h3>1. 개요</h3>
-      <p>
-        재배포 배경과 목적을 명시합니다. (예: 긴급 패치, 구성값 오류 수정, 이전 배포 회피책 등)
-      </p>
+import ApprovalDayIcon from '/icons/approval-day.svg';
+import ApprovalNightIcon from '/icons/approval-night.svg';
+import ApprovalActiveIcon from '/icons/approval-active.svg';
 
-      <h3>2. 변경 내용</h3>
-      <ul>
-        <li>모듈/기능: [변경 대상] / 변경 유형: [버그픽스/성능/설정]</li>
-        <li>변경 전/후 차이: [주요 차이, 호환성, 의존성]</li>
-      </ul>
+import ScheduleDayIcon from '/icons/schedule-day.svg';
+import ScheduleNightIcon from '/icons/schedule-night.svg';
+import ScheduleActiveIcon from '/icons/schedule-active.svg';
 
-      <h3>3. 배포 대상 및 범위</h3>
-      <ul>
-        <li>서비스/시스템: [목록]</li>
-        <li>환경/서버: [Prod/Stage/Region/노드]</li>
-      </ul>
+import TaskDayIcon from '/icons/task-day.svg';
+import TaskNightIcon from '/icons/task-night.svg';
+import TaskActiveIcon from '/icons/task-active.svg';
 
-      <h3>4. 재배포 일정</h3>
-      <p>YYYY-MM-DD HH:mm ~ YYYY-MM-DD HH:mm (점검/공지 포함 시각 명시)</p>
+import AnalyticsDayIcon from '/icons/analytics-day.svg';
+import AnalyticsNightIcon from '/icons/analytics-night.svg';
+import AnalyticsActiveIcon from '/icons/analytics-active.svg';
 
-      <h3>5. 영향도 및 리스크</h3>
-      <ul>
-        <li>사용자 영향: [무중단/부분 중단/전면 중단], 대안: [우회/알림]</li>
-        <li>시스템 영향: [성능/자원/로그/알람] 변화 가능성</li>
-        <li>리스크/대응: [항목] – [완화/복구 방안/담당]</li>
-      </ul>
+import LogoutIcon from '/icons/logout.svg';
+import LogoutDayIcon from '/icons/logout-day.svg';
 
-      <h3>6. 롤백 및 복구 계획</h3>
-      <ul>
-        <li>롤백 기준: [지표/알람/오류 임계치] (판단 일시 기록)</li>
-        <li>롤백 절차: [명령/스크립트] → 검증(YYYY-MM-DD HH:mm) → 공지(YYYY-MM-DD HH:mm)</li>
-      </ul>
+import * as S from './Sidebar.styles';
 
-      <h3>7. 모니터링 계획</h3>
-      <ul>
-        <li>지표/도구: [APM/로그/알람 체계]</li>
-        <li>모니터링 기간: YYYY-MM-DD HH:mm ~ YYYY-MM-DD HH:mm</li>
-      </ul>
-    `,
-    html: `
-      <h2>재배포 계획서</h2>
+export default function Sidebar() {
+  const { sidebarOpen, theme } = useUIStore();
+  const { logout } = useAuth();
+  const isDark = theme === 'dark';
+  const { pathname } = useLocation();
 
-      <h3>1. 개요</h3>
-      <p>
-        재배포 배경과 목적을 명시합니다. (예: 긴급 패치, 구성값 오류 수정, 이전 배포 회피책 등)
-      </p>
+  const items = useMemo(
+    () => [
+      {
+        key: 'home',
+        to: PATHS.HOME,
+        label: '홈',
+        icons: {
+          dark: HomeNightIcon,
+          light: HomeDayIcon,
+          active: HomeActiveIcon,
+        },
+        end: true,
+      },
+      {
+        key: 'approvals',
+        to: PATHS.APPROVALS,
+        label: '결재함',
+        icons: {
+          dark: ApprovalNightIcon,
+          light: ApprovalDayIcon,
+          active: ApprovalActiveIcon,
+        },
+        end: true,
+      },
+      {
+        key: 'schedule',
+        to: PATHS.SCHEDULE,
+        label: '일정관리',
+        icons: {
+          dark: ScheduleNightIcon,
+          light: ScheduleDayIcon,
+          active: ScheduleActiveIcon,
+        },
+        end: true,
+      },
+      {
+        key: 'tasks',
+        to: PATHS.TASKS,
+        label: '작업관리',
+        icons: {
+          dark: TaskNightIcon,
+          light: TaskDayIcon,
+          active: TaskActiveIcon,
+        },
+        end: true,
+      },
+      {
+        key: 'analytics',
+        to: PATHS.ANALYTICS,
+        label: '통계',
+        icons: {
+          dark: AnalyticsNightIcon,
+          light: AnalyticsDayIcon,
+          active: AnalyticsActiveIcon,
+        },
+        end: true,
+      },
+      {
+        key: 'problems',
+        to: PATHS.PROBLEMS,
+        label: '문제관리',
+        iconComponent: LibraryBig,
+        end: true,
+      },
+    ],
+    [],
+  );
 
-      <h3>2. 변경 내용</h3>
-      <ul>
-        <li>모듈/기능: [변경 대상] / 변경 유형: [버그픽스/성능/설정]</li>
-        <li>변경 전/후 차이: [주요 차이, 호환성, 의존성]</li>
-      </ul>
+  const iconSrc = useCallback(
+    (isActive, icons) => {
+      if (!icons) return null;
+      const { dark, light, active } = icons;
+      if (isActive && active) return active;
+      return isDark ? dark : light;
+    },
+    [isDark],
+  );
 
-      <h3>3. 배포 대상 및 범위</h3>
-      <ul>
-        <li>서비스/시스템: [목록]</li>
-        <li>환경/서버: [Prod/Stage/Region/노드]</li>
-      </ul>
+  const isApprovalFamily =
+    pathname === PATHS.APPROVALS ||
+    pathname === PATHS.APPROVAL_NEW ||
+    pathname.startsWith('/approval/');
 
-      <h3>4. 재배포 일정</h3>
-      <p>YYYY-MM-DD HH:mm ~ YYYY-MM-DD HH:mm (점검/공지 포함 시각 명시)</p>
+  const isScheduleFamily =
+    pathname === PATHS.SCHEDULE || pathname.startsWith(`${PATHS.SCHEDULE}/`);
 
-      <h3>5. 영향도 및 리스크</h3>
-      <ul>
-        <li>사용자 영향: [무중단/부분 중단/전면 중단], 대안: [우회/알림]</li>
-        <li>시스템 영향: [성능/자원/로그/알람] 변화 가능성</li>
-        <li>리스크/대응: [항목] – [완화/복구 방안/담당]</li>
-      </ul>
+  const isTasksFamily =
+    pathname === PATHS.TASKS || pathname.startsWith('/tasks/');
 
-      <h3>6. 롤백 및 복구 계획</h3>
-      <ul>
-        <li>롤백 기준: [지표/알람/오류 임계치] (판단 일시 기록)</li>
-        <li>롤백 절차: [명령/스크립트] → 검증(YYYY-MM-DD HH:mm) → 공지(YYYY-MM-DD HH:mm)</li>
-      </ul>
+  const isProblemsFamily =
+    pathname === PATHS.PROBLEMS || pathname.startsWith('/problems/');
 
-      <h3>7. 모니터링 계획</h3>
-      <ul>
-        <li>지표/도구: [APM/로그/알람 체계]</li>
-        <li>모니터링 기간: YYYY-MM-DD HH:mm ~ YYYY-MM-DD HH:mm</li>
-      </ul>
-    `,
-  },
+  return (
+    <S.Aside open={sidebarOpen}>
+      <S.MenuWrap>
+        {items.map((it) => {
+          const forceActive =
+            it.key === 'approvals'
+              ? isApprovalFamily
+              : it.key === 'schedule'
+                ? isScheduleFamily
+                : it.key === 'tasks'
+                  ? isTasksFamily
+                  : it.key === 'problems'
+                    ? isProblemsFamily
+                    : false;
 
-  복구: {
-    design: `
-      <h2>복구 보고서</h2>
+          return (
+            <S.Item
+              key={it.key}
+              to={it.to}
+              end={it.end}
+              data-active={forceActive ? 'true' : undefined}
+            >
+              {({ isActive }) => {
+                const src = iconSrc(isActive || forceActive, it.icons);
+                const IconComponent = it.iconComponent;
+                const isItemActive = isActive || forceActive;
+                return (
+                  <>
+                    {IconComponent ? (
+                      <IconComponent
+                        size={18}
+                        style={{ flexShrink: 0 }}
+                        color={isItemActive ? undefined : 'currentColor'}
+                      />
+                    ) : src ? (
+                      <S.IconImg src={src} alt="" aria-hidden="true" />
+                    ) : null}
+                    {it.label}
+                  </>
+                );
+              }}
+            </S.Item>
+          );
+        })}
+      </S.MenuWrap>
 
-      <h3>1. 개요</h3>
-      <p>
-        장애 발생 배경과 복구 목적을 기술합니다. 사건 개요(서비스/영향 범위/지속 시간)를 포함합니다.
-      </p>
-
-      <h3>2. 장애 현황</h3>
-      <ul>
-        <li>발생 일시: YYYY-MM-DD HH:mm</li>
-        <li>복구 일시: YYYY-MM-DD HH:mm</li>
-        <li>장애 등급: [긴급/높음/보통/낮음], 영향: [사용자/거래/기능]</li>
-      </ul>
-
-      <h3>3. 원인 분석</h3>
-      <ul>
-        <li>직접 원인: [즉시 촉발 요인] (발생 일시 포함)</li>
-        <li>근본 원인(RCA): [설계/프로세스/운영/인적 요인 등] (발견 일시 포함)</li>
-      </ul>
-
-      <h3>4. 복구 조치 내용</h3>
-      <ul>
-        <li>즉시 조치: [완화/우회/재기동/패치] (조치 일시: YYYY-MM-DD HH:mm)</li>
-        <li>영구 조치: [코드/설정/인프라/모니터링 개선] (완료 일시: YYYY-MM-DD HH:mm)</li>
-      </ul>
-
-      <h3>5. 영향 범위</h3>
-      <ul>
-        <li>영향 서비스/시스템: [목록]</li>
-        <li>영향 사용자/거래: [수치/비율/기간]</li>
-      </ul>
-
-      <h3>6. 재발 방지 대책</h3>
-      <ul>
-        <li>개선 과제: [항목/담당/목표일(YYYY-MM-DD HH:mm)]</li>
-        <li>점검/모니터링 강화: [지표/알람/리허설] (시행 일시: YYYY-MM-DD HH:mm)</li>
-      </ul>
-
-      <h3>7. 기타 사항</h3>
-      <p>
-        커뮤니케이션(공지/보고) 이력(일시 포함), 외부 영향, 추가 공유 사항을 기재합니다.
-      </p>
-    `,
-    html: `
-      <h2>복구 보고서</h2>
-
-      <h3>1. 개요</h3>
-      <p>
-        장애 발생 배경과 복구 목적을 기술합니다. 사건 개요(서비스/영향 범위/지속 시간)를 포함합니다.
-      </p>
-
-      <h3>2. 장애 현황</h3>
-      <ul>
-        <li>발생 일시: YYYY-MM-DD HH:mm</li>
-        <li>복구 일시: YYYY-MM-DD HH:mm</li>
-        <li>장애 등급: [긴급/높음/보통/낮음], 영향: [사용자/거래/기능]</li>
-      </ul>
-
-      <h3>3. 원인 분석</h3>
-      <ul>
-        <li>직접 원인: [즉시 촉발 요인] (발생 일시 포함)</li>
-        <li>근본 원인(RCA): [설계/프로세스/운영/인적 요인 등] (발견 일시 포함)</li>
-      </ul>
-
-      <h3>4. 복구 조치 내용</h3>
-      <ul>
-        <li>즉시 조치: [완화/우회/재기동/패치] (조치 일시: YYYY-MM-DD HH:mm)</li>
-        <li>영구 조치: [코드/설정/인프라/모니터링 개선] (완료 일시: YYYY-MM-DD HH:mm)</li>
-      </ul>
-
-      <h3>5. 영향 범위</h3>
-      <ul>
-        <li>영향 서비스/시스템: [목록]</li>
-        <li>영향 사용자/거래: [수치/비율/기간]</li>
-      </ul>
-
-      <h3>6. 재발 방지 대책</h3>
-      <ul>
-        <li>개선 과제: [항목/담당/목표일(YYYY-MM-DD HH:mm)]</li>
-        <li>점검/모니터링 강화: [지표/알람/리허설] (시행 일시: YYYY-MM-DD HH:mm)</li>
-      </ul>
-
-      <h3>7. 기타 사항</h3>
-      <p>
-        커뮤니케이션(공지/보고) 이력(일시 포함), 외부 영향, 추가 공유 사항을 기재합니다.
-      </p>
-    `,
-  },
-};
+      <S.LogoutBtn type="button" onClick={logout}>
+        <S.IconImg
+          src={isDark ? LogoutIcon : LogoutDayIcon}
+          alt=""
+          aria-hidden="true"
+        />
+        로그아웃
+      </S.LogoutBtn>
+    </S.Aside>
+  );
+}
