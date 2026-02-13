@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { NavLink } from 'react-router-dom';
 
-import logo from '/icons/logo.svg';
+import logo from '/icons/aiwacs_logo.png';
 import { PATHS } from '@/app/routes/paths';
 import { POSITION_REVERSE_MAP } from '@/constants/accounts';
 import { useAuth } from '@/hooks/useAuth';
@@ -206,10 +206,10 @@ export default function Header() {
           aria-label="Go to home"
           onClick={onClickBrand}
         >
-          <S.Logo src={logo} alt="BE4MAN" />
+          <S.Logo src={logo} alt="ITSM" />
         </S.LogoLink>
         <S.BrandLink to={PATHS.PR} onClick={onClickBrand}>
-          BE4MAN
+          ITSM
         </S.BrandLink>
       </S.Left>
 
@@ -266,7 +266,13 @@ export default function Header() {
         </S.DesktopOnly>
 
         <S.User>
-          <S.Avatar src={avatar} alt={`${displayName} 프로필`} />
+          <S.Avatar
+            src={avatar || '/icons/user.png'}
+            alt={`${displayName} 프로필`}
+            onError={(e) => {
+              e.target.src = '/icons/user.png';
+            }}
+          />
           <S.NameTitle>
             <strong>{displayName}</strong>
             <small>{position}</small>

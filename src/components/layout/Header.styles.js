@@ -6,7 +6,10 @@ const R = (t, key = 'md', def = 8) =>
   (typeof t?.radius === 'number' ? t.radius : t?.radius?.[key]) ?? def;
 
 export const Bar = styled.header`
-  grid-area: header;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   height: var(--header-h);
   min-height: var(--header-h);
   display: grid;
@@ -16,8 +19,6 @@ export const Bar = styled.header`
   padding: 0 ${({ theme }) => theme.spacing.md};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.surface};
-  position: sticky;
-  top: 0;
   z-index: 100;
   backdrop-filter: saturate(180%) blur(8px);
 `;
@@ -25,13 +26,13 @@ export const Bar = styled.header`
 export const Left = styled.div`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.sm};
+  gap: 0;
 `;
 
 export const Logo = styled.img`
   display: block;
   width: 120px;
-  height: 60px;
+  height: 66px;
   cursor: pointer;
   image-rendering: optimizequality;
   image-rendering: -webkit-optimize-contrast;
@@ -50,7 +51,7 @@ export const BrandLink = styled(Link)`
   text-decoration: none;
   color: inherit;
   display: inline-block;
-  font-size: 30px;
+  font-size: 12.3px;
   font-weight: 700;
   letter-spacing: 0.2px;
   white-space: nowrap;
